@@ -2,7 +2,7 @@
 //#extension GL_ARB_shading_language_420pack : require
 #extension GL_ARB_explicit_attrib_location : require
 
-#define TASK 21  // 21 22 31 32 33 4 5
+#define TASK 10
 #define ENABLE_OPACITY_CORRECTION 0
 #define ENABLE_LIGHTNING 0
 #define ENABLE_SHADOWING 0
@@ -40,8 +40,8 @@ inside_volume_bounds(const in vec3 sampling_position)
 
 
 float
-get_sample_data(vec3 in_sampling_pos){
-    
+get_sample_data(vec3 in_sampling_pos)
+{
     vec3 obj_to_tex = vec3(1.0) / max_bounds;
     return texture(volume_texture, in_sampling_pos * obj_to_tex).r;
 
@@ -60,12 +60,12 @@ void main()
     /// check if we are inside volume
     bool inside_volume = inside_volume_bounds(sampling_pos);
     
-    if (!inside_volume)        
+    if (!inside_volume)
         discard;
 
-#if TASK == 21 // ASSIGNMENT 1
+#if TASK == 10
     vec4 max_val = vec4(0.0, 0.0, 0.0, 0.0);
-  
+    
     // the traversal loop,
     // termination when the sampling position is outside volume boundarys
     // another termination condition for early ray termination is added
@@ -93,8 +93,7 @@ void main()
     dst = max_val;
 #endif 
     
-#if TASK == 22 // ASSIGNMENT 1
-
+#if TASK == 11
     // the traversal loop,
     // termination when the sampling position is outside volume boundarys
     // another termination condition for early ray termination is added
@@ -114,7 +113,7 @@ void main()
     }
 #endif
     
-#if TASK == 31 || TASK == 32  // ASSIGNMENT 2 & 3 & 4
+#if TASK == 12 || TASK == 13
     // the traversal loop,
     // termination when the sampling position is outside volume boundarys
     // another termination condition for early ray termination is added
@@ -128,7 +127,7 @@ void main()
 
         // increment the ray sampling position
         sampling_pos += ray_increment;
-#if TASK == 32 // Binary Search
+#if TASK == 13 // Binary Search
         IMPLEMENT;
 #endif
 #if ENABLE_LIGHTNING == 1 // Add Shading
@@ -143,7 +142,7 @@ void main()
     }
 #endif 
 
-#if TASK == 41 // ASSIGNMENT 5 & 6 & 7
+#if TASK == 31
     // the traversal loop,
     // termination when the sampling position is outside volume boundarys
     // another termination condition for early ray termination is added
@@ -173,3 +172,4 @@ void main()
     // return the calculated color value
     FragColor = dst;
 }
+

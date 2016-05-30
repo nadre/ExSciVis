@@ -175,7 +175,7 @@ bool g_reload_shader = false;
 bool g_reload_shader_pressed = false;
 bool g_show_transfer_function = false;
 
-int g_task_chosen = 21;
+int g_task_chosen = 10;
 int g_task_chosen_old = g_task_chosen;
 
 bool  g_pause = false;
@@ -347,32 +347,32 @@ void showGUI(){
     if (ImGui::CollapsingHeader("Task", 0, true, true))
     {        
         if (ImGui::TreeNode("Introduction")){
-            ImGui::RadioButton("Max Intensity Projection", &g_task_chosen, 21);
-            ImGui::RadioButton("Average Intensity Projection", &g_task_chosen, 22);
+            ImGui::RadioButton("Max Intensity Projection", &g_task_chosen, 10);
+            ImGui::RadioButton("Average Intensity Projection", &g_task_chosen, 11);
             ImGui::TreePop();
         }
 
         if (ImGui::TreeNode("Iso Surface Rendering")){
-            ImGui::RadioButton("Inaccurate", &g_task_chosen, 31);
-            ImGui::RadioButton("Binary Search", &g_task_chosen, 32);
+            ImGui::RadioButton("Inaccurate", &g_task_chosen, 12);
+            ImGui::RadioButton("Binary Search", &g_task_chosen, 13);
             ImGui::SliderFloat("Iso Value", &g_iso_value, 0.0f, 1.0f, "%.8f", 1.0f);
             ImGui::TreePop();
         }       
  
         if (ImGui::TreeNode("Direct Volume Rendering")){
-            ImGui::RadioButton("Compositing", &g_task_chosen, 41);
+            ImGui::RadioButton("Compositing", &g_task_chosen, 31);
             ImGui::TreePop();
         }
 
         
         g_reload_shader ^= ImGui::Checkbox("1", &g_lighting_toggle); ImGui::SameLine();
-        g_task_chosen == 41 || g_task_chosen == 31 || g_task_chosen == 32 ? ImGui::Text("Enable Lighting") : ImGui::TextColored(ImVec4(0.2f, 0.2f, 0.2f, 0.5f), "Enable Lighting");
+        g_task_chosen == 31 || g_task_chosen == 12 || g_task_chosen == 13 ? ImGui::Text("Enable Lighting") : ImGui::TextColored(ImVec4(0.2f, 0.2f, 0.2f, 0.5f), "Enable Lighting");
 
         g_reload_shader ^= ImGui::Checkbox("2", &g_shadow_toggle); ImGui::SameLine();
-        g_task_chosen == 41 || g_task_chosen == 31 || g_task_chosen == 32 ? ImGui::Text("Enable Shadows") : ImGui::TextColored(ImVec4(0.2f, 0.2f, 0.2f, 0.5f), "Enable Shadows");
+        g_task_chosen == 31 || g_task_chosen == 12 || g_task_chosen == 13 ? ImGui::Text("Enable Shadows") : ImGui::TextColored(ImVec4(0.2f, 0.2f, 0.2f, 0.5f), "Enable Shadows");
 
         g_reload_shader ^= ImGui::Checkbox("3", &g_opacity_correction_toggle); ImGui::SameLine();
-        g_task_chosen == 41 ? ImGui::Text("Opacity Correction") : ImGui::TextColored(ImVec4(0.2f, 0.2f, 0.2f, 0.5f), "Opacity Correction");
+        g_task_chosen == 31 ? ImGui::Text("Opacity Correction") : ImGui::TextColored(ImVec4(0.2f, 0.2f, 0.2f, 0.5f), "Opacity Correction");
 
         if (g_task_chosen != g_task_chosen_old){
             g_reload_shader = true;
