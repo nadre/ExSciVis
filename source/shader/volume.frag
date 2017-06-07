@@ -44,13 +44,13 @@ get_sample_data(vec3 in_sampling_pos)
 {
     vec3 obj_to_tex = vec3(1.0) / max_bounds;
     return texture(volume_texture, in_sampling_pos * obj_to_tex).r;
-
 }
 
 void main()
 {
     /// One step trough the volume
     vec3 ray_increment      = normalize(ray_entry_position - camera_location) * sampling_distance;
+
     /// Position in Volume
     vec3 sampling_pos       = ray_entry_position + ray_increment; // test, increment just to be sure we are in the volume
 
@@ -126,26 +126,56 @@ void main()
     // the traversal loop,
     // termination when the sampling position is outside volume boundarys
     // another termination condition for early ray termination is added
-
-    vec4 tmp_vec = vec4(0.0, 0.0, 0.0, 0.0);
-
     while (inside_volume)
     {
         // get sample
         float s = get_sample_data(sampling_pos);
 
-        vec4 color = texture(transfer_texture, vec2(s, s));
-
-        if (color.a >= iso_value)
+        if (s >= iso_value && TASK == 12)
         {
-            dst = vec4(light_diffuse_color, 1.0);
+            dst = texture(transfer_texture, vec2(s, s));
             break;
         } 
 
         // increment the ray sampling position
         sampling_pos += ray_increment;
 #if TASK == 13 // Binary Search
-        IMPLEMENT;
+        if (s >= iso_value)
+        {
+            vec3 left = sampling_pos - 2*ray_increment;
+            vec3 right = sampling_pos - ray_increment;
+            float eps = 0.01;
+
+            // all(greaterThan(right, left))
+            int max_steps = 40;
+            while (max_steps > 0)
+            {
+                vec3 mid = left + (right - left) / 2;
+                s = get_sample_data(mid);
+                if (s < (iso_value + eps) && s > (iso_value - eps))
+                {
+                    dst = vec4(255, 255, 0, 1.0);
+                    // dst = texture(transfer_texture, vec2(s, s));
+                    break;
+                }
+                // our sampling point is bigger then the searched iso_value, so we move the right boundary to the middle
+                if (s > iso_value)
+                {
+                    right = mid;
+                }
+                // our sampling point is smaller then the searched iso_value, so we move the left boundary to the middle
+                else
+                {
+                    left = mid;
+                }
+                max_steps-=1;
+            }
+            if(max_steps <= 0){
+                dst = texture(transfer_texture, vec2(s, s));
+            }
+        } 
+
+
 #endif
 #if ENABLE_LIGHTNING == 1 // Add Shading
         IMPLEMENTLIGHT;
